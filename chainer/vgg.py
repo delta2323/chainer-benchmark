@@ -10,7 +10,7 @@ class VGG(chainer.FunctionSet):
     '''
 
     insize = 224
-    batchsize = 16
+    batchsize = 64
     in_channels = 3
 
     def __init__(self):

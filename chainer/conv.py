@@ -30,7 +30,7 @@ class Conv1(Conv):
 
     '''
 
-    batchsize = 64
+    batchsize = 128
     in_channels = 3
     insize = 128
     out_channels = 96
@@ -43,7 +43,7 @@ class Conv2(Conv):
 
     '''
 
-    batchsize = 32
+    batchsize = 128
     in_channels = 64
     insize = 64
     out_channels = 128
@@ -56,7 +56,7 @@ class Conv3(Conv):
 
     '''
 
-    batchsize = 64
+    batchsize = 128
     in_channels = 128
     insize = 32
     out_channels = 128
