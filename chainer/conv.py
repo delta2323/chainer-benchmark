@@ -1,6 +1,5 @@
 import chainer
 import chainer.functions as F
-from chainer.utils import profile
 
 
 class Conv(chainer.FunctionSet):
@@ -18,7 +17,6 @@ class Conv(chainer.FunctionSet):
                                  self.kernel_size, stride=1)
         )
 
-    @profile.time(True)
     def forward(self, x_data, train=True):
         x = chainer.Variable(x_data, volatile=not train)
         return self.conv(x)
