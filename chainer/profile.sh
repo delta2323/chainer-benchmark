@@ -19,7 +19,7 @@ done
 
 for model in alex overfeat vgg conv1 conv2 conv3 conv4 conv5
 do
-    for kw in 'first-forward-pass' 'first-backward-pass' 'first-iteration-time' 'average-forward-pass(iter2-)' 'average-backward-pass(iter2-)' 'average-iteration-pass(iter2-)'
+    for kw in 'first-forward-pass' 'first-backward-pass' 'average-forward-pass(iter2-)' 'average-backward-pass(iter2-)' 'first-iteration-pass' 'average-iteration-pass(iter2-)'
     do
 	sum=`grep ${kw} ${logdir}/${model}.log.* | cut -f 2 | paste -d+ -s - | bc`
 
