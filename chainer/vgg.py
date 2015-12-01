@@ -1,6 +1,5 @@
 import chainer
 import chainer.functions as F
-from chainer.utils import profile
 
 
 class VGG(chainer.FunctionSet):
@@ -13,22 +12,24 @@ class VGG(chainer.FunctionSet):
     batchsize = 64
     in_channels = 3
 
-    def __init__(self):
+    def __init__(self, batchsize, use_cudnn):
         super(VGG, self).__init__(
-            conv1=F.Convolution2D(3, 64, 3),
-            conv2=F.Convolution2D(64, 256, 3),
-            conv3=F.Convolution2D(256, 256, 3, pad=1),
-            conv4=F.Convolution2D(256, 256, 3, pad=1),
-            conv5=F.Convolution2D(256, 512, 3, pad=1),
-            conv6=F.Convolution2D(512, 512, 3, pad=1),
-            conv7=F.Convolution2D(512, 512, 3, pad=1),
-            conv8=F.Convolution2D(512, 512, 3, pad=1),
+            conv1=F.Convolution2D(3, 64, 3, use_cudnn=use_cudnn),
+            conv2=F.Convolution2D(64, 256, 3, use_cudnn=use_cudnn),
+            conv3=F.Convolution2D(256, 256, 3, pad=1, use_cudnn=use_cudnn),
+            conv4=F.Convolution2D(256, 256, 3, pad=1, use_cudnn=use_cudnn),
+            conv5=F.Convolution2D(256, 512, 3, pad=1, use_cudnn=use_cudnn),
+            conv6=F.Convolution2D(512, 512, 3, pad=1, use_cudnn=use_cudnn),
+            conv7=F.Convolution2D(512, 512, 3, pad=1, use_cudnn=use_cudnn),
+            conv8=F.Convolution2D(512, 512, 3, pad=1, use_cudnn=use_cudnn),
             fc6=F.Linear(25088, 4096),
             fc7=F.Linear(4096, 4096),
             fc8=F.Linear(4096, 1000)
         )
+        self.use_cudnn = use_cudnn
+        if batchsize is not None:
+            self.batchsize = batchsize
 
-    @profile.time(True)
     def forward(self, x_data, train=True):
         x = chainer.Variable(x_data, volatile=not train)
 

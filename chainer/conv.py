@@ -1,6 +1,5 @@
 import chainer
 import chainer.functions as F
-from chainer.utils import profile
 
 
 class Conv(chainer.FunctionSet):
@@ -11,14 +10,17 @@ class Conv(chainer.FunctionSet):
     out_channels = None
     kernel_size = None
 
-    def __init__(self):
+    def __init__(self, batchsize, use_cudnn):
         super(Conv, self).__init__(
             conv=F.Convolution2D(self.in_channels,
                                  self.out_channels,
-                                 self.kernel_size, stride=1)
+                                 self.kernel_size, stride=1,
+                                 use_cudnn=use_cudnn)
         )
+        self.use_cudnn = use_cudnn
+        if batchsize is not None:
+            self.batchsize = batchsize
 
-    @profile.time(True)
     def forward(self, x_data, train=True):
         x = chainer.Variable(x_data, volatile=not train)
         return self.conv(x)

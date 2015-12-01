@@ -1,5 +1,4 @@
-from chainer import cuda
-from chainer.cuda import cupy
+from cupy import cuda
 
 class Timer(object):
     def __init__(self):
@@ -12,16 +11,17 @@ class Timer(object):
     def __del__(self):
         self.start_gpu = None
         self.stop_gpu = None
+        self.stream = None
 
     def start(self):
         if not self.running:
-            self.start_gpu.record()
+            self.start_gpu.record(self.stream)
             self.running = True
             self.has_run_at_least_once = True
 
     def stop(self):
         if self.running:
-            self.stop_gpu.record()
+            self.stop_gpu.record(self.stream)
             self.stop_gpu.synchronize()
             self.running = False
 
@@ -33,7 +33,7 @@ class Timer(object):
         if self.running:
             self.stop()
 
-        self.elapsed_milliseconds = cupy.cuda.stream.get_elapsed_time(self.start_gpu, self.stop_gpu)
+        self.elapsed_milliseconds = cuda.stream.get_elapsed_time(self.start_gpu, self.stop_gpu)
         return self.elapsed_milliseconds
 
     def microseconds(self):
@@ -44,7 +44,7 @@ class Timer(object):
         if self.running:
             self.stop()
             
-        self.elapsed_milliseconds = cupy.cuda.stream.get_elapsed_time(self.start_gpu, self.stop_gpu) * 1000
+        self.elapsed_milliseconds = cuda.stream.get_elapsed_time(self.start_gpu, self.stop_gpu) * 1000
         return self.elapsed_microseconds
 
     def seconds(self):
@@ -54,5 +54,6 @@ class Timer(object):
         if not self.initted:
             self.start_gpu = cuda.Event()
             self.stop_gpu = cuda.Event()
+            self.stream = cuda.Stream()
         self.initted = True
 
